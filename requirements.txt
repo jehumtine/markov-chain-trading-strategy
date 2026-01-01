@@ -1,0 +1,7 @@
+pandas
+numpy==1.24.4
+matplotlib
+seaborn
+pandas_ta
+pyarrow
+python==3.10.17
