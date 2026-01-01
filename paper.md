@@ -12,9 +12,9 @@ abstract: |
 
 The search for predictive models in the volatile and complex cryptocurrency markets is a significant challenge in quantitative finance. A key requirement for developing any robust trading strategy is a rigorous backtesting framework that can validate its performance on historical data while accounting for real-world market conditions like transaction costs and slippage. Without this, a theoretically sound model may fail in a live environment.
 
-This paper proposes that Markov chains offer a compelling framework for this challenge. A Markov chain is a stochastic model where the probability of a future event depends only on the current state. By discretizing the continuous and often chaotic behavior of the market into a finite number of states—defined by price action and trading volume—we can model the market's dynamics and identify predictive patterns in its state transitions.
+This paper proposes that Markov chains offer a compelling framework for this challenge. A Markov chain is a stochastic model where the probability of a future event depends only on the current state. By discretizing the continuous and often chaotic behavior of the market into a finite number of statesdefined by price action and trading volumewe can model the market's dynamics and identify predictive patterns in its state transitions.
 
-We present a novel trading strategy that utilizes this Markov chain model to forecast short-term price movements. The core of the strategy is the identification of "useful sequences"—sequences of market states that have a high probability of preceding a specific bullish or bearish movement. These sequences form the basis of our trading signals.
+We present a novel trading strategy that utilizes this Markov chain model to forecast short-term price movements. The core of the strategy is the identification of "useful sequences"sequences of market states that have a high probability of preceding a specific bullish or bearish movement. These sequences form the basis of our trading signals.
 
 The strategy is implemented and evaluated within a custom-built backtesting engine that employs a walk-forward analysis methodology to ensure robustness and adaptability to changing market regimes. The backtester simulates real-world trading by incorporating transaction costs, dynamic stop-loss and take-profit levels based on the Average True Range (ATR), and a systematic hyperparameter optimization process using the `hyperopt` library. This paper details the full methodology and evaluates the strategy's performance, aiming to provide a transparent and reproducible framework for the development of quantitative trading strategies.
 
@@ -124,6 +124,16 @@ An analysis of the strategy's performance over the backtesting period reveals th
 ### 4.3. Impact of Multi-Timeframe Analysis
 
 The incorporation of signals from both 1-hour and 4-hour timeframes is a key feature of the strategy. The analysis of trade sources revealed that the 4-hour signals were the primary drivers of profitability. This suggests that the longer-term patterns have a stronger predictive power and are less susceptible to short-term market noise. The 1-hour signals, while less profitable on their own, may still provide value by offering more frequent trading opportunities and potentially capturing shorter-term movements within the broader trend. This multi-timeframe approach provides a degree of diversification to the signal generation process and contributes to the overall robustness of the strategy.
+
+### 4.4. Strategy Evolution and Model Selection
+
+The final strategy presented in this paper is the result of a rigorous, iterative development process that began with an unprofitable initial model. A series of controlled experiments were crucial in identifying the key parameters and logic that would lead to a statistically significant trading edge.
+
+The first major breakthrough was the discovery that the model's predictive capabilities were highly sensitive to the length of the training data lookback period. Initial backtests with a 1-year window failed to achieve profitability. Only by extending the training window to 2 years did the Markov chain model have sufficient historical data to learn reliable patterns, establishing our first profitable baseline.
+
+Further experimentation revealed that signals generated from the 4-hour timeframe were the primary drivers of performance. While 1-hour and composite signals were initially tested, they were found to introduce more noise than predictive value. Consequently, the strategy was refined to focus exclusively on the 4-hour signal source.
+
+This led to the development of two distinct, viable models: a "Growth" model (unfiltered) and a "Quality" model, which incorporates a 200-period simple moving average trend filter. The "Growth" model produced a higher absolute profit, but the "Quality" model demonstrated a superior Profit Factor and greater robustness. For the purposes of long-term development and risk management, the "Quality" model was selected as the official baseline strategy due to its higher efficiency and more reliable statistical edge. A final refinement, an "Intelligent Exit" logic, was added, which permits an exit on a reverse signal only if the trade is currently profitable, further improving the strategy's performance. This data-driven, evolutionary approach was fundamental to transforming an unprofitable concept into a robust and viable trading strategy.
 
 ## 5. Conclusion
 
